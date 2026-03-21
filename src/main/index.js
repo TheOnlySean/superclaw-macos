@@ -22,7 +22,7 @@ if (!app) {
 // 現在與 Intel 對齊：預設不關 GPU。僅在明確需要時關閉：
 //   SUPERCLAW_DISABLE_GPU=1（任意平台）或 SUPERCLAW_SILICON_DISABLE_HW_ACCEL=1（僅 darwin-arm64）
 const isMacArm64 = process.platform === 'darwin' && process.arch === 'arm64';
-const ARM64_BUILD_TAG = 'arm64-build-23';
+const ARM64_BUILD_TAG = 'arm64-build-24';
 /** 內嵌 Control UI 本機靜態服務優先埠；須在 gateway.controlUi.allowedOrigins 中有對應 http://127.0.0.1:該埠 */
 const SUPERCLAW_EMBEDDED_CONTROL_UI_PORT = 27489;
 // 穩定模式改為「明確開啟」：預設與 Intel 一致不關 GPU。先前預設開 stable 並 disableHardwareAcceleration，
@@ -1271,8 +1271,60 @@ function registerAppProtocol() {
   });
 }
 
-app.whenReady().then(() => {
+/** macOS：從「下載」等位置直接執行時，建議移至 Applications（利於更新、減少 Translocation 問題）。 */
+async function promptMoveToApplicationsIfNeeded() {
+  if (!app.isPackaged || process.platform !== 'darwin') return;
+  if (process.env.SUPERCLAW_SKIP_MOVE_TO_APPS_PROMPT === '1') return;
+  if (typeof app.isInApplicationsFolder !== 'function' || app.isInApplicationsFolder()) return;
+  const prefsPath = path.join(app.getPath('userData'), 'superclaw-ui-prefs.json');
+  try {
+    if (fs.existsSync(prefsPath)) {
+      const j = JSON.parse(fs.readFileSync(prefsPath, 'utf8'));
+      if (j && j.skipMoveToApplicationsPrompt) return;
+    }
+  } catch (_) {}
+  const { response } = await dialog.showMessageBox({
+    type: 'info',
+    buttons: ['後で', 'Applications フォルダへ移動'],
+    defaultId: 1,
+    cancelId: 0,
+    title: withBuildTag('SuperClaw'),
+    message: '「アプリケーション」フォルダへの移動をおすすめします',
+    detail:
+      'ダウンロードフォルダのままでもご利用いただけますが、自動更新の安定性やセキュリティのため、Applications（アプリケーション）フォルダへ移動することをおすすめします。後で手動でドラッグして移動しても構いません。',
+  });
+  if (response === 0) {
+    try {
+      fs.mkdirSync(path.dirname(prefsPath), { recursive: true });
+      let j = {};
+      if (fs.existsSync(prefsPath)) {
+        try {
+          j = JSON.parse(fs.readFileSync(prefsPath, 'utf8') || '{}');
+        } catch (_) {}
+      }
+      j.skipMoveToApplicationsPrompt = true;
+      fs.writeFileSync(prefsPath, JSON.stringify(j, null, 2) + '\n', 'utf8');
+    } catch (_) {}
+    return;
+  }
+  try {
+    if (typeof app.moveToApplicationsFolder === 'function') {
+      const moved = app.moveToApplicationsFolder();
+      if (moved) return;
+    }
+  } catch (e) {
+    await dialog.showMessageBox({
+      type: 'warning',
+      title: withBuildTag('SuperClaw'),
+      message: '移動を完了できませんでした',
+      detail: (e && e.message) ? String(e.message) : 'Finder で SuperClaw を「アプリケーション」にドラッグしてください。',
+    });
+  }
+}
+
+app.whenReady().then(async () => {
   if (protocol && typeof protocol.handle === 'function') registerAppProtocol();
+  await promptMoveToApplicationsIfNeeded();
   if (process.env.TEST_DASHBOARD_CSP) {
     createDashboardWindow();
     return;
