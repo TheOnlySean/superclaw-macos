@@ -36,7 +36,9 @@ git remote add origin https://github.com/YOUR_GITHUB_ORG/superclaw-macos.git
 git push -u origin main
 ```
 
-**注意**：`openclaw/`、`dist/`、`.env` 已在 `.gitignore` 中，不会进仓库；CI 或本机发版前需执行 `npm run prepare-openclaw` 等同梱步骤。
+**注意**：`openclaw/`、`node-runtime/`、`dist/`、`.env` 已在 `.gitignore` 中（`node-runtime` 内 `node` 单文件超过 GitHub 100MB 限制）。克隆或 CI 发版前请执行：
+
+`npm run prepare-openclaw` 与 `npm run prepare-node-runtime:arm64`（或 `x64`）。
 
 ## 3. 发布新版本到 GitHub Releases
 
