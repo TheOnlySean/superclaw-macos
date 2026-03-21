@@ -1,0 +1,11 @@
+{
+  "name": "superclaw-license-api",
+  "version": "1.0.0",
+  "description": "SuperClaw ライセンス認証 API（Neon DB の licenses テーブルで検証）",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.0"
+  }
+}

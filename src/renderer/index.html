@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SuperClaw セットアップ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-brand">
+      <span class="app-name">SuperClaw</span>
+      <span class="app-tagline">メッセージするだけで、AI が動き出す。</span>
+    </div>
+  </header>
+  <div id="step-welcome" class="step active">
+    <h1>ようこそ</h1>
+    <p class="subtitle">メッセージを送るだけで、ファイル整理・検索や定型作業を任せられるパーソナル AI です。チャットするだけではなく、お使いのパソコンで「やること」を実行します。</p>
+    <p class="section">通常の手順ではコマンドの入力や環境構築が必要で、慣れていない方には難しい場合があります。このアプリではボタン操作だけでセットアップできます。まずはお使いのパソコンの準備状況を確認し、画面の案内に従って進めてください。</p>
+    <div class="actions">
+      <button type="button" class="btn" id="btn-check">準備状況をチェックする</button>
+    </div>
+  </div>
+
+  <div id="step-check" class="step">
+    <h1>準備チェック</h1>
+    <p class="subtitle">お使いのパソコンで OpenClaw が動作するか確認します。</p>
+    <div class="actions">
+      <button type="button" class="btn" id="btn-run-check">チェックを実行する</button>
+    </div>
+      <div id="check-result" style="display:none;">
+      <div class="check-grid" id="check-grid"></div>
+      <div id="node-install-block" class="node-install-block" style="display:none;">
+        <button type="button" class="btn btn-secondary" id="btn-install-node">ここでインストール</button>
+        <span class="muted-small">または <a href="https://nodejs.org/" target="_blank" rel="noopener" class="check-link">公式サイトでダウンロード</a></span>
+      </div>
+      <div id="node-install-wrap" class="node-install-wrap" style="display:none;">
+        <div class="log-box" id="node-install-log"></div>
+        <p id="node-install-status" class="muted-small"></p>
+        <button type="button" class="btn btn-secondary" id="btn-node-install-retry-check">もう一度チェックする</button>
+      </div>
+      <div class="score-wrap" id="score-wrap"></div>
+      <p id="check-already-msg" class="already-setup-msg" style="display:none; margin-top:12px; color: var(--muted);">OpenClaw は既にセットアップ済みです。下のボタンからダッシュボードを開けます。</p>
+      <div class="actions">
+        <button type="button" class="btn" id="btn-to-install" style="display:none;">インストールを開始する</button>
+        <button type="button" class="btn btn-success" id="btn-check-go-dashboard" style="display:none;">SuperClaw を使い始める</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="step-risk" class="step">
+    <h1>ご利用前に必ずお読みください</h1>
+    <div class="risk-card">
+      <h3 class="risk-head">OpenClaw について（リスクのご案内）</h3>
+      <p>OpenClaw は、お使いの端末上で動作するパーソナル AI アシスタントです。公式ドキュメント・GitHub に記載のとおり、シェル実行・ファイル操作・メッセージング連携などの権限を持ち、プロンプトインジェクションやプラグイン経由のリスク、認証まわりの問題が報告されている場合があります。利用にあたっては、<a href="https://docs.openclaw.ai/gateway/security" target="_blank" rel="noopener">OpenClaw 公式のセキュリティガイド</a>等を参照し、ご自身の責任でお使いください。</p>
+      <h3 class="risk-head">当サービスについて</h3>
+      <p>本アプリ（SuperClaw）は、OpenClaw の利用を補助するものです。OpenClaw の開発および関連する技術サポートは当方では行っておらず、OpenClaw 本体の不具合・脆弱性・それに起因する損害については当方では責任を負いかねます。ご利用前に内容を十分にご確認のうえ、ご判断ください。</p>
+      <p><strong>推奨：</strong>できるだけ、機密情報や重要資料を保存していない<strong>専用の端末</strong>でお使いになることをお勧めします。日常使いのメインPCへのインストールは推奨しておりません。</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" id="btn-risk-back">戻る</button>
+      <button type="button" class="btn" id="btn-to-install-from-risk">リスクを理解したうえで、インストールする</button>
+    </div>
+  </div>
+
+  <div id="step-install" class="step">
+    <h1>OpenClaw をインストールしています</h1>
+    <p class="subtitle">しばらくお待ちください。下にログが表示されます。</p>
+    <div class="actions">
+      <button type="button" class="btn" id="btn-start-install">インストールを開始する</button>
+    </div>
+    <div id="install-log-wrap" style="display:none;">
+      <div class="log-box" id="install-log"></div>
+      <p id="install-status"></p>
+      <div id="install-xcode-first" class="install-xcode-first" style="display:none;">
+        <p><strong>OpenClaw を入れるには、Mac の「コマンドラインツール」が一度だけ必要です。</strong></p>
+        <p>下の「インストール画面を開く」を押すと、<strong>別のウィンドウ</strong>（「コマンドラインツールをインストール」）が表示されます。<strong>そのウィンドウで「インストール」を押し、ダウンロードとインストールが完了するまで待ってください。</strong></p>
+        <p class="install-xcode-warn">※ Terminal が出て「プロセスが完了しました」と表示されても、それはスクリプトの終了であり、ツールのインストールが終わったわけではありません。システムのインストールウィンドウで完了してから、ここに戻り「インストールする」をもう一度押してください。</p>
+        <button type="button" class="btn" id="btn-open-xcode-install-again">インストール画面を開く</button>
+      </div>
+      <div id="install-xcode-hint" class="install-xcode-hint" style="display:none;">
+        <p class="muted-small">コマンドラインツールが必要です。下のボタンで<strong>別のシステムウィンドウ</strong>を開き、そのウィンドウで「インストール」を押して完了してから、もう一度「インストールする」を押してください。</p>
+        <button type="button" class="btn btn-secondary" id="btn-install-xcode-from-install">インストール画面を開く</button>
+      </div>
+      <div id="install-next-actions" class="actions" style="display:none;">
+        <button type="button" class="btn" id="btn-to-model">次へ：使いたい AI を選ぶ</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="step-model" class="step">
+    <h1>利用する AI を選んでください</h1>
+    <p class="subtitle">ChatGPT Pro をご利用の方は Codex、そうでない方は Qwen（無料）が利用できます。</p>
+    <div class="model-cards">
+      <div class="model-card" data-model="codex">
+        <span class="model-card-badge">おすすめ</span>
+        <h3>ChatGPT Pro（Codex）</h3>
+        <p>Plus / Pro 会員ならブラウザでログインするだけ。</p>
+        <button type="button" class="btn btn-model-codex">ログイン</button>
+      </div>
+      <div class="model-card" data-model="qwen">
+        <h3>Qwen（無料）</h3>
+        <p>デバイスコードでログイン。1日2000リクエスト程度。テスト用で、能力はやや低めです。</p>
+        <button type="button" class="btn btn-model-qwen">ログイン</button>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" id="btn-skip-model">あとで設定する</button>
+      <button type="button" class="btn" id="btn-to-done" style="display:none;">次へ進む</button>
+    </div>
+    <p id="model-status" style="margin-top:12px; color: var(--muted);"></p>
+    <p id="onboard-status" style="margin-top:8px; display:none;"></p>
+  </div>
+
+  <div id="step-done" class="step">
+    <h1>セットアップが完了しました</h1>
+    <p class="subtitle">SuperClaw をご利用いただけます。</p>
+    <div class="done-card">
+      <p>下のボタンからダッシュボードを開き、使い始めてください。</p>
+      <button type="button" class="btn btn-success" id="btn-open-dashboard">SuperClaw を使い始める</button>
+    </div>
+  </div>
+
+  <div id="step-license" class="step">
+    <h1>ライセンス認証</h1>
+    <p class="subtitle">ダッシュボードをご利用いただくには、ライセンスキーの入力が必要です。</p>
+    <div class="license-card">
+      <label for="license-key-input" class="license-label">ライセンスキー</label>
+      <input type="text" id="license-key-input" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX の形式で入力" autocomplete="off" />
+      <p id="license-error" class="license-error" style="display:none;"></p>
+      <button type="button" class="btn btn-success" id="btn-license-verify">認証してダッシュボードを開く</button>
+    </div>
+    <div class="license-purchase">
+      <p class="license-purchase-label">ライセンスをお持ちでない方は、下のボタンからご購入ください。</p>
+      <a href="https://www.superclaw.jp/purchase.html" target="_blank" rel="noopener" class="btn license-purchase-btn" id="link-license-purchase">ライセンスを購入する</a>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

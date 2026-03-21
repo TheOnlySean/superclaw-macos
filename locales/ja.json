@@ -1,0 +1,61 @@
+{
+  "appTitle": "SuperClaw セットアップ",
+  "welcome": {
+    "title": "SuperClaw へようこそ",
+    "subtitle": "OpenClaw を、ターミナルなしでワンクリックセットアップ",
+    "desc": "このアプリでは、パソコンのチェックからインストール・AIモデル設定まで、すべて画面の操作だけで完了できます。",
+    "next": "システムをチェック"
+  },
+  "check": {
+    "title": "システムチェック",
+    "run": "チェックを実行",
+    "node": "Node.js",
+    "ram": "メモリ",
+    "disk": "空きディスク",
+    "os": "OS",
+    "score": "スコア",
+    "pass": "インストール可能です",
+    "fail": "条件を満たしていません",
+    "next": "インストールを開始",
+    "nodeOk": "Node {{version}} 以上",
+    "nodeNg": "Node {{required}} 以上が必要です",
+    "ramOk": "{{total}} GB",
+    "ramNg": "8 GB 以上推奨",
+    "diskOk": "{{free}} GB 空き",
+    "diskNg": "10 GB 以上の空きが必要"
+  },
+  "install": {
+    "title": "OpenClaw をインストール中",
+    "start": "インストール開始",
+    "log": "ログ",
+    "success": "インストールが完了しました",
+    "error": "エラー: {{message}}",
+    "next": "次へ（初期設定）"
+  },
+  "onboard": {
+    "title": "初期設定",
+    "running": "設定を適用しています…",
+    "success": "設定完了",
+    "error": "エラー: {{message}}",
+    "skip": "スキップ",
+    "next": "AIモデルを設定"
+  },
+  "model": {
+    "title": "AIモデルを選んでください",
+    "codex": "ChatGPT Pro（Codex）",
+    "codexDesc": "ChatGPT Plus をご利用の方はブラウザでログインします。",
+    "qwen": "Qwen（無料）",
+    "qwenDesc": "デバイスコードでログイン、1日2000リクエスト程度。",
+    "login": "ログイン",
+    "loggingIn": "ログイン中… ブラウザが開きます",
+    "success": "モデルを設定しました",
+    "error": "エラー: {{message}}",
+    "skip": "あとで設定する",
+    "next": "完了へ"
+  },
+  "done": {
+    "title": "セットアップ完了",
+    "desc": "OpenClaw のダッシュボードを開いて、すぐに使い始められます。",
+    "openDashboard": "ダッシュボードを開く"
+  }
+}
