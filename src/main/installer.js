@@ -55,6 +55,23 @@ function getBundledNodePath() {
   }
 }
 
+/**
+ * 同梱 Node 起動時、一部 Mac（メモリ少・VM・他アプリ占有）で V8 が
+ * 「Failed to reserve virtual memory for CodeRange」で即死することがある。
+ * --jitless で JIT 用の大きな仮想領域予約を避ける（やや遅いが起動可能）。
+ * 無効化: 環境変数 SUPERCLAW_BUNDLED_NODE_NO_JITLESS=1
+ */
+function envWithBundledNodeMitigations(baseEnv) {
+  const env = { ...baseEnv };
+  if (process.env.SUPERCLAW_BUNDLED_NODE_NO_JITLESS === '1') return env;
+  if (process.platform !== 'darwin' && process.platform !== 'linux') return env;
+  const flag = '--jitless';
+  const cur = String(env.NODE_OPTIONS || process.env.NODE_OPTIONS || '').trim();
+  if (/\bjitless\b/.test(cur)) return env;
+  env.NODE_OPTIONS = cur ? `${cur} ${flag}` : flag;
+  return env;
+}
+
 /** OpenClaw 公式: models auth login は interactive TTY 必須。非 TTY だと即 throw し、ブラウザも開かない。 */
 function isAuthLoginArgs(args) {
   return args[0] === 'models' && args[1] === 'auth' && args[2] === 'login';
@@ -70,7 +87,7 @@ function runOpenclawBundled(mainWindow, args, options = {}) {
   const env = { ...process.env, OPENCLAW_EMBEDDED_IN: 'SuperClaw', ...(options.env || {}) };
   const nodeBin = getBundledNodePath();
   const exec = nodeBin || process.execPath;
-  const execEnv = nodeBin ? env : { ...env, ELECTRON_RUN_AS_NODE: '1' };
+  const execEnv = nodeBin ? envWithBundledNodeMitigations(env) : { ...env, ELECTRON_RUN_AS_NODE: '1' };
   const useTty = process.platform === 'darwin' && isAuthLoginArgs(args);
   const spawnArgs = nodeBin ? [cliPath, ...args] : [cliPath, ...args];
   const spawnOpts = {
@@ -280,7 +297,7 @@ async function loginCodex(mainWindow) {
     const nodeBin = getBundledNodePath();
     const exec = nodeBin || process.execPath;
     const env = { ...process.env, OPENCLAW_ROOT: openclawRoot, OPENCLAW_AGENT_DIR: agentDir, SUPERCLAW_OPEN_AUTH_VIA_STDOUT: '1' };
-    const execEnv = nodeBin ? env : { ...env, ELECTRON_RUN_AS_NODE: '1' };
+    const execEnv = nodeBin ? envWithBundledNodeMitigations(env) : { ...env, ELECTRON_RUN_AS_NODE: '1' };
     const stderrChunks = [];
     return new Promise((resolve, reject) => {
       const child = spawn(exec, [scriptPath], {
@@ -339,7 +356,7 @@ async function loginQwen(mainWindow) {
       const nodeBin = getBundledNodePath();
       const exec = nodeBin || process.execPath;
       const env = { ...process.env, OPENCLAW_AGENT_DIR: agentDir };
-      const execEnv = nodeBin ? env : { ...env, ELECTRON_RUN_AS_NODE: '1' };
+      const execEnv = nodeBin ? envWithBundledNodeMitigations(env) : { ...env, ELECTRON_RUN_AS_NODE: '1' };
       try {
         await new Promise((resolve, reject) => {
           const child = spawn(exec, [scriptPath], {
@@ -410,7 +427,7 @@ function startBundledGateway() {
   };
   const nodeBin = getBundledNodePath();
   const exec = nodeBin || process.execPath;
-  const execEnv = nodeBin ? env : { ...env, ELECTRON_RUN_AS_NODE: '1' };
+  const execEnv = nodeBin ? envWithBundledNodeMitigations(env) : { ...env, ELECTRON_RUN_AS_NODE: '1' };
   const spawnArgs = nodeBin ? [cliPath, 'gateway', '--port', '18789'] : [cliPath, 'gateway', '--port', '18789'];
   try {
     const child = spawn(exec, spawnArgs, {
