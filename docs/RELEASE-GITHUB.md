@@ -83,21 +83,24 @@ https://github.com/OWNER/REPO/releases/download/v1.0.1/文件名.zip
 
 若希望**官网永远指向「最新版」**而不用每次改版本号，有两种常见做法：
 
-### 做法 A：固定附件名（推荐）
+### 做法 A：固定附件名（推荐，本仓库已采用）
 
-每个 Release 都上传**相同文件名**，例如：
+每个 Release 都上传**相同文件名**：
 
-- `SuperClaw-mac-arm64.zip`  
-- `SuperClaw-mac-x64.zip`  
+- `SuperClaw-mac-arm64.zip` — Apple Silicon  
+- `SuperClaw-mac-x64.zip` — Intel  
 
-则官网可写死：
+官网下载按钮可**永久**使用（始终指向**最新**一次 Release 的同名附件）：
 
 ```text
-https://github.com/OWNER/REPO/releases/latest/download/SuperClaw-mac-arm64.zip
-https://github.com/OWNER/REPO/releases/latest/download/SuperClaw-mac-x64.zip
+https://github.com/TheOnlySean/superclaw-macos/releases/latest/download/SuperClaw-mac-arm64.zip
+https://github.com/TheOnlySean/superclaw-macos/releases/latest/download/SuperClaw-mac-x64.zip
 ```
 
 `releases/latest/download/` 会解析到**最新一次 Release** 里同名文件。
+
+**本次 Release 页面（v1.0.0）**：  
+<https://github.com/TheOnlySean/superclaw-macos/releases/tag/v1.0.0>
 
 ### 做法 B：带版本号的文件名
 

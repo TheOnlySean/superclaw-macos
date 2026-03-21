@@ -25,8 +25,8 @@ find "$APP" -name "._*" -delete
 find "$APP" -name ".__*" -delete
 dot_clean -m "$APP" 2>/dev/null || true
 codesign -vvv --deep --strict "$APP" >/dev/null 2>&1 || { echo "Signature invalid after clean"; exit 1; }
-printf '%s\n' '請依您的 Mac 選擇對應版本：' "・Apple Silicon (M1/M2/M3)：請用 SuperClaw-$VER-arm64.zip" "・Intel Mac：請用 SuperClaw-$VER-x64.zip" '用錯版本會雙擊沒反應（無錯誤視窗）。' '' '若首次雙擊出現安全提示，請右鍵 SuperClaw → 打開 → 點「打開」。' > "$WRK/首次打開說明.txt"
 rm -f "$ZIP"
 cd "$WRK"
-zip -r -X -y "$ZIP" SuperClaw.app "首次打開說明.txt"
-echo "OK: $ZIP (no ._* files, signature valid)"
+# 僅打包 .app；不放「首次打開說明」等額外檔（官網與 GitHub Release 用固定檔名下載）
+zip -r -X -y "$ZIP" SuperClaw.app
+echo "OK: $ZIP (no ._* files, signature valid, app only)"
