@@ -1,7 +1,7 @@
 {
   "name": "superclaw-setup",
   "productName": "SuperClaw",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SuperClaw セットアップ — ワンクリックでインストール",
   "main": "src/main/index.js",
   "author": "SuperClaw",

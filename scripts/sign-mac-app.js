@@ -11,11 +11,15 @@ const path = require('path');
 const fs = require('fs');
 
 const ROOT = path.resolve(__dirname, '..');
+let PKG_VERSION = '1.0.0';
+try {
+  PKG_VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version || PKG_VERSION;
+} catch (_) {}
 const MAC_ARCH = process.env.MAC_ARCH === 'x64' ? 'x64' : 'arm64';
 const APP_PATH = MAC_ARCH === 'x64'
   ? path.join(ROOT, 'dist', 'mac', 'SuperClaw.app')
   : path.join(ROOT, 'dist', 'mac-arm64', 'SuperClaw.app');
-const ZIP_NAME = MAC_ARCH === 'x64' ? 'SuperClaw-1.0.0-x64.zip' : 'SuperClaw-1.0.0-arm64.zip';
+const ZIP_NAME = MAC_ARCH === 'x64' ? `SuperClaw-${PKG_VERSION}-x64.zip` : `SuperClaw-${PKG_VERSION}-arm64.zip`;
 const IDENTITY = 'Developer ID Application: SEAN XIAO (G7VUNQ8M6B)';
 const ENTITLEMENTS = path.join(ROOT, 'build', 'entitlements.mac.plist');
 

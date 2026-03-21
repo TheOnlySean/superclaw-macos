@@ -18,9 +18,10 @@ rm -rf dist/mac-arm64
 TARGET_ARCH=arm64 npm run prepare-openclaw && npm run prepare-node-runtime:arm64 && CSC_IDENTITY_AUTO_DISCOVERY=false ./node_modules/.bin/electron-builder --mac --arm64 --dir
 node scripts/sign-mac-app.js
 bash scripts/make-clean-zip.sh arm64
-set -a && . ./.env && set +a && NOTARIZE_ZIP_PATH="$PWD/dist/SuperClaw-1.0.0-arm64.zip" node scripts/notarize-mac.js
+VER="$(node -p "require('./package.json').version")"
+set -a && . ./.env && set +a && NOTARIZE_ZIP_PATH="$PWD/dist/SuperClaw-$VER-arm64.zip" node scripts/notarize-mac.js
 xcrun stapler staple "$PWD/dist/mac-arm64/SuperClaw.app"
-mkdir -p dist/release-for-upload && cp -f dist/SuperClaw-1.0.0-arm64.zip dist/release-for-upload/
+mkdir -p dist/release-for-upload && cp -f "dist/SuperClaw-$VER-arm64.zip" dist/release-for-upload/
 ```
 
 （`.env` 需含 `APPLE_ID` / `NOTARY_PASSWORD` / `TEAM_ID`；勿提交 Git。）
@@ -33,5 +34,5 @@ mkdir -p dist/release-for-upload && cp -f dist/SuperClaw-1.0.0-arm64.zip dist/re
 
 ## 產物
 
-- 分發：`dist/SuperClaw-1.0.0-arm64.zip`
+- 分發：`dist/SuperClaw-<package.json version>-arm64.zip`
 - 已簽名 app：`dist/mac-arm64/SuperClaw.app`

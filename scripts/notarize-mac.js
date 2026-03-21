@@ -14,9 +14,13 @@ const path = require('path');
 const fs = require('fs');
 
 const ROOT = path.resolve(__dirname, '..');
+let PKG_VERSION = '1.0.0';
+try {
+  PKG_VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version || PKG_VERSION;
+} catch (_) {}
 const APP_PATH = path.join(ROOT, 'dist', 'mac-arm64', 'SuperClaw.app');
-const ZIP_PATH = path.join(ROOT, 'dist', 'SuperClaw-1.0.0-arm64.zip');
-const DMG_PATH = path.join(ROOT, 'dist', 'SuperClaw-1.0.0-arm64.dmg');
+const ZIP_PATH = path.join(ROOT, 'dist', `SuperClaw-${PKG_VERSION}-arm64.zip`);
+const DMG_PATH = path.join(ROOT, 'dist', `SuperClaw-${PKG_VERSION}-arm64.dmg`);
 
 const APPLE_ID = process.env.APPLE_ID;
 const NOTARY_PASSWORD = process.env.NOTARY_PASSWORD;
@@ -45,7 +49,7 @@ if (!zipToSubmit && fs.existsSync(APP_PATH)) {
   }
 }
 if (!zipToSubmit || !fs.existsSync(zipToSubmit)) {
-  console.error('找不到要公證的 zip。請先執行簽名流程產出 dist/SuperClaw-1.0.0-arm64.zip：');
+  console.error(`找不到要公證的 zip。請先執行簽名流程產出 dist/SuperClaw-${PKG_VERSION}-arm64.zip：`);
   console.error('  node scripts/sign-mac-app.js');
   process.exit(1);
 }
