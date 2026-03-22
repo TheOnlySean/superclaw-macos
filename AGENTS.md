@@ -8,7 +8,6 @@
 - **`SUPERCLAW_ARM64_DIRECT_DASHBOARD=1`**：除錯用，啟動時跳過主安裝精靈、直開 Dashboard。**預設關閉**（與 Intel 一致先走安裝流程）。
 - **`SUPERCLAW_USE_RENDERER_SAFE=1`**：主視窗改優先 `renderer-safe`（極端環境除錯）；預設用完整 `renderer` 安裝精靈。
 - **`SUPERCLAW_BUNDLED_NODE_NO_JITLESS=1`**：同梱 Node 起 OpenClaw 時**不要**加 `--jitless`（預設會加，避免低內存機 V8 `CodeRange` OOM；若需對照除錯可關閉）。
-- **`SUPERCLAW_SKIP_MOVE_TO_APPS_PROMPT=1`**：macOS 打包版跳過「是否移至 Applications」提示（自動測試等）。
 
 ## macOS arm64 修 bug 後的流程
 
