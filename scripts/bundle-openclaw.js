@@ -13,15 +13,21 @@ const rootDir = path.join(__dirname, '..');
 const outDir = path.join(rootDir, 'openclaw');
 const packDir = path.join(os.tmpdir(), `openclaw-pack-${Date.now()}`);
 const { patchControlUiCsp } = require('./patch-control-ui-csp');
+const { patchOpenclawMjs } = require('./patch-openclaw-bootstrap');
 
 // 已有 openclaw 且未强制重打时跳过，避免每次打包都重新 npm pack + npm install（耗时数分钟）
 const forceBundle = process.env.FORCE_OPENCLAW_BUNDLE === '1' || process.env.FORCE_OPENCLAW_BUNDLE === 'true';
+const hasEntry =
+  fs.existsSync(path.join(outDir, 'dist', 'entry.js')) ||
+  fs.existsSync(path.join(outDir, 'dist', 'entry.mjs'));
 const hasExisting = fs.existsSync(outDir) &&
   fs.existsSync(path.join(outDir, 'package.json')) &&
-  fs.existsSync(path.join(outDir, 'node_modules'));
+  fs.existsSync(path.join(outDir, 'node_modules')) &&
+  hasEntry;
 if (hasExisting && !forceBundle) {
   console.log('openclaw already bundled at', outDir, '(skip). Set FORCE_OPENCLAW_BUNDLE=1 to re-bundle.');
   patchControlUiCsp(outDir);
+  patchOpenclawMjs(path.join(outDir, 'openclaw.mjs'));
   console.log('Done. OpenClaw at', outDir);
   process.exit(0);
 }
@@ -101,4 +107,5 @@ if (fs.existsSync(codexOauth)) {
 }
 
 patchControlUiCsp(outDir);
+patchOpenclawMjs(path.join(outDir, 'openclaw.mjs'));
 console.log('Done. Bundled openclaw at', outDir);

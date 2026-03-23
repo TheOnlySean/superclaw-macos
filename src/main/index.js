@@ -22,7 +22,7 @@ if (!app) {
 // 現在與 Intel 對齊：預設不關 GPU。僅在明確需要時關閉：
 //   SUPERCLAW_DISABLE_GPU=1（任意平台）或 SUPERCLAW_SILICON_DISABLE_HW_ACCEL=1（僅 darwin-arm64）
 const isMacArm64 = process.platform === 'darwin' && process.arch === 'arm64';
-const ARM64_BUILD_TAG = 'arm64-build-25';
+const ARM64_BUILD_TAG = 'arm64-build-26';
 /** 內嵌 Control UI 本機靜態服務優先埠；須在 gateway.controlUi.allowedOrigins 中有對應 http://127.0.0.1:該埠 */
 const SUPERCLAW_EMBEDDED_CONTROL_UI_PORT = 27489;
 // 穩定模式改為「明確開啟」：預設與 Intel 一致不關 GPU。先前預設開 stable 並 disableHardwareAcceleration，

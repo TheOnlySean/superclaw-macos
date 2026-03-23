@@ -26,3 +26,10 @@ Finder と同じ **実ファイルのドラッグ＆ドロップで Applications
 - あるいは **配布を DMG 主** にして、ZIP は上級者向けに残す。
 
 （`app.moveToApplicationsFolder()` は環境によって移動後の起動に失敗することがあり、本プロジェクトでは採用しない。）
+
+## App Translocation（ダウンロードから直接起動）
+
+未署名・隔離付きの .app を **Downloads から直接開く** と、macOS が **App Translocation** でランダムパスにマウントすることがあります。  
+パスに **スペース**（例: `SuperClaw 2.app`）があると、古い **openclaw.mjs** の相対 `import("./dist/entry.js")` が解決に失敗する事例があります。  
+**対策**：配布パッケージ内の `openclaw.mjs` を **`import.meta.url` 基準の file: URL** で entry を読み込むようパッチ（`scripts/patch-openclaw-bootstrap.js` + `afterPack`）。  
+併せて **アプリケーションに移す** と Translocation を避けやすいです。

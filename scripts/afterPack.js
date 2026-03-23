@@ -6,12 +6,22 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 const { patchControlUiCsp } = require('./patch-control-ui-csp');
+const { patchOpenclawMjs } = require('./patch-openclaw-bootstrap');
 
 exports.default = async function afterPack(context) {
   const appOutDir = context.appOutDir;
   const productFilename = context.packager.appInfo.productFilename; // SuperClaw
   const appPath = path.join(appOutDir, `${productFilename}.app`);
   const openclawDir = path.join(appPath, 'Contents', 'Resources', 'openclaw');
+  const entryJs = path.join(openclawDir, 'dist', 'entry.js');
+  const entryMjs = path.join(openclawDir, 'dist', 'entry.mjs');
+  if (!fs.existsSync(entryJs) && !fs.existsSync(entryMjs)) {
+    throw new Error(
+      `[afterPack] openclaw 缺少 dist/entry.js：請在 japanclaw-setup 目錄執行 npm run prepare-openclaw（勿在無 dist 的殘缺 openclaw 上跳過打包）。`,
+    );
+  }
+  const openclawMjs = path.join(openclawDir, 'openclaw.mjs');
+  patchOpenclawMjs(openclawMjs);
   console.log('[afterPack] Patching Control UI CSP in:', openclawDir);
   patchControlUiCsp(openclawDir);
   const appClean = path.join(appOutDir, `${productFilename}-clean.app`);
